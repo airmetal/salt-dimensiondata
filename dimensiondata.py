@@ -1,3 +1,10 @@
+##
+#  Author: Andrew A. Das
+#  Email:  andrew.das@itaas.dimensiondata.compile
+#  File:   Early prototype of Dimension Data cloud provider support for Salt-cloud.
+#  Version 0.1
+#
+
 # Import python libs
 from __future__ import absolute_import
 import os
