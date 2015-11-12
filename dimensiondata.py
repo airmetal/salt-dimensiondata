@@ -1,6 +1,6 @@
 ##
 #  Author: Andrew A. Das
-#  Email:  andrew.das@itaas.dimensiondata.compile
+#  Email:  andrew.das@itaas.dimensiondata.com
 #  File:   Early prototype of Dimension Data cloud provider support for Salt-cloud.
 #  Version 0.2
 #
