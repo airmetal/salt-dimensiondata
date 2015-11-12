@@ -1,10 +1,3 @@
-##
-#  Author: Andrew A. Das
-#  Email:  andrew.das@itaas.dimensiondata.compile
-#  File:   Early prototype of Dimension Data cloud provider support for Salt-cloud.
-#  Version 0.1
-#
-
 # Import python libs
 from __future__ import absolute_import
 import os
@@ -16,6 +9,11 @@ import pprint
 try:
     from libcloud.compute.base import NodeState
     from libcloud.compute.base import NodeAuthPassword
+    from libcloud.loadbalancer.base import Algorithm, Driver, LoadBalancer
+    from libcloud.loadbalancer.base import Member
+    from libcloud.loadbalancer.types import Provider as Provider_lb
+    from libcloud.loadbalancer.providers import get_driver as get_driver_lb
+  
     HAS_LIBCLOUD = True
 except ImportError:
     HAS_LIBCLOUD = False
@@ -24,6 +22,10 @@ except ImportError:
 from salt.cloud.libcloudfuncs import *   
 # Import salt libs
 import salt.utils
+
+#Disable SSL/TLS Verification
+import libcloud.security
+libcloud.security.VERIFY_SSL_CERT = False
 
 # Import salt.cloud libs
 import salt.utils.cloud
@@ -71,7 +73,7 @@ get_node = namespaced_function(get_node, globals())
 # Only load in this module is the DIMENSIONDATA configurations are in place
 def __virtual__():
     '''
-    Set up the libcloud functions and check for DIMENSIONDATA configurations
+    Set up the libcloud functions and check for GCE configurations.
     '''
     if get_configured_provider() is False:
         return False
@@ -79,8 +81,11 @@ def __virtual__():
     if get_dependencies() is False:
         return False
 
-    return __virtualname__
+    for provider, details in six.iteritems(__opts__['providers']):
+        if 'dimensiondata' not in details:
+            continue
 
+    return __virtualname__
 
 def get_configured_provider():
     '''
@@ -88,7 +93,7 @@ def get_configured_provider():
     '''
     return config.is_provider_configured(
         __opts__,
-        __active_provider_name__ or __virtualname__,
+        __active_provider_name__ or 'dimensiondata',
         ('user_id','key', 'region')
     )
 
@@ -150,30 +155,15 @@ def create(vm_):
         network_domain = [y for y in networks if y.name == vm_['network_domain']][0]
         vlan = conn.ex_list_vlans(location=location, network_domain=network_domain)[0]
         kwargs = {
-        	'name': vm_['name'],
-        	'image': image,
-        	'auth': rootPw,
-        	'ex_description': vm_['description'],
-        	'ex_network_domain': network_domain,
-        	'ex_vlan': vlan,
-        	'ex_is_started': vm_['is_started']
-	}
-        '''
-        salt.utils.cloud.fire_event(
-        	'event',
-        	'requesting instance',
-        	'salt/cloud/{0}/requesting'.format(vm_['name']),
-        	{'kwargs': {'name': kwargs['name'],
-                    'image': kwargs['image'],
-                   #'size': kwargs['size'],
-                    'auth': '',
-                    'ex_description': kwargs['ex_description'],
-                    'ex_network_domain': kwargs['ex_network_domain'],
-                    'ex_vlan': kwargs['ex_vlan'],
-                    'ex_is_started': kwargs['ex_is_started']}},
-        	    transport=__opts__['transport']
-    	)
-        '''
+          'name': vm_['name'],
+          'image': image,
+          'auth': rootPw,
+          'ex_description': vm_['description'],
+          'ex_network_domain': network_domain,
+          'ex_vlan': vlan,
+          'ex_is_started': vm_['is_started']
+  }
+
         data = conn.create_node(**kwargs)
     except Exception as exc:
         log.error(
@@ -319,6 +309,102 @@ def create(vm_):
 
     return ret
 
+def create_lb(kwargs=None, call=None):
+    '''
+    Create a load-balancer configuration.
+    CLI Example:
+    .. code-block:: bash
+        salt-cloud -f create_lb dimensiondata name=dev-lb port=80 protocol=http members=w1,w2,w3 algorithm=ROUND_ROBIN
+    '''
+    conn = get_conn()
+    if call != 'function':
+        raise SaltCloudSystemExit(
+            'The create_lb function must be called with -f or --function.'
+        )
+
+    if not kwargs or 'name' not in kwargs:
+        log.error(
+            'A name must be specified when creating a health check.'
+        )
+        return False
+    if 'port' not in kwargs:
+        log.error(
+            'A port or port-range must be specified for the load-balancer.'
+        )
+        return False
+    if 'networkdomain' not in kwargs:
+        log.error(
+            'A network domain must be specified for the load-balancer.'
+        )
+        return False
+    if 'members' in kwargs:
+      members = []
+      ip = ""
+      membersList = kwargs.get('members').split(',')
+      log.debug('MemberList: {0}'.format(membersList))	
+      for member in membersList: 
+        try:
+           log.debug('Member: {0}'.format(member))	
+           node = get_node(conn,member)
+           log.debug('Node: {0}'.format(node))	
+           ip = node.private_ips[0]
+        
+        except Exception as err:
+         log.error(
+           'Failed to get node ip: {0}'.format(
+             err
+          ),
+         # Show the traceback if the debug logging level is enabled
+           exc_info_on_loglevel=logging.DEBUG
+           )
+        members.append(Member(ip,ip,kwargs['port']))
+    else:
+        members = None
+        
+    log.debug('Members: {0}'.format(members))
+	
+    networkdomain = kwargs['networkdomain']	
+    name = kwargs['name']
+    port = kwargs['port']
+    protocol = kwargs.get('protocol', None)
+    algorithm = kwargs.get('algorithm', None)
+
+    lb_conn = get_lb_conn(conn)
+    network_domains = conn.ex_list_network_domains()
+    network_domain = [y for y in network_domains if y.name == networkdomain][0]
+	
+    log.debug('Network Domain: {0}'.format(network_domain.id))
+    lb_conn.ex_set_current_network_domain(network_domain.id)
+    	
+    salt.utils.cloud.fire_event(
+        'event',
+        'create load_balancer',
+        'salt/cloud/loadbalancer/creating',
+        kwargs,
+        transport=__opts__['transport']
+    )
+
+    lb = lb_conn.create_balancer(
+        name, port, protocol, algorithm, members
+    )
+
+    salt.utils.cloud.fire_event(
+        'event',
+        'created load_balancer',
+        'salt/cloud/loadbalancer/created',
+        kwargs,
+        transport=__opts__['transport']
+    )
+    return _expand_balancer(lb)
+
+def _expand_balancer(lb):
+    '''
+    Convert the libcloud load-balancer object into something more serializable.
+    '''
+    ret = {}
+    ret.update(lb.__dict__)
+    return ret
+	
 def preferred_ip(vm_, ips):
     '''
     Return the preferred Internet protocol. Either 'ipv4' (default) or 'ipv6'.
@@ -348,49 +434,45 @@ def ssh_interface(vm_):
         search_global=False
     )
 
-'''
-NOT USED
-def create(vm_):
-    
-    Create a single MCP VM.
-   
-    try:
-        # Check for required profile parameters before sending any API calls.
-        if vm_['profile'] and config.is_profile_configured(__opts__,
-                                                           __active_provider_name__ or 'dimensiondata',
-                                                           vm_['profile']) is False:
-            return False
-    except AttributeError:
-        pass
+def stop(name, call=None):
+    '''
+    Stop a VM in DimensionData.
+    name
+        The name of the VM to stop.
+    CLI Example:
+    .. code-block:: bash
+        salt-cloud -a stop vm_name
+    '''
+  
+    conn = get_conn()
+    node = get_node(conn, name)
+    log.debug('Node of Cloud VM:  {0}'.format(node))
+  
+    status = conn.ex_shutdown_graceful(node)  
+    log.debug('Status of Cloud VM: {0}'.format(status))
+  
+    return status
+  
+def start(name, call=None):
+    '''
+    Stop a VM in DimensionData.
+    name
+        The name of the VM to stop.
+    CLI Example:
+    .. code-block:: bash
+        salt-cloud -a stop vm_name
+    '''
+  
+    conn = get_conn()
+    node = get_node(conn, name)
+    log.debug('Node of Cloud VM:  {0}'.format(node))
+  
+    status = conn.ex_start_node(node)  
+    log.debug('Status of Cloud VM: {0}'.format(status))
+  
+    return status
 
-    # Since using "provider: <provider-engine>" is deprecated, alias provider
-    # to use driver: "driver: <provider-engine>"
-    if 'provider' in vm_:
-        vm_['driver'] = vm_.pop('provider')
-
-    #if _validate_name(vm_['name']) is False:
-     #   return False
-
-    salt.utils.cloud.fire_event(
-        'event',
-        'starting create',
-        'salt/cloud/{0}/creating'.format(vm_['name']),
-        {
-            'name': vm_['name'],
-            'profile': vm_['profile'],
-            'provider': vm_['driver'],
-        },
-        transport=__opts__['transport']
-    )
-
-    log.info('Creating Cloud VM {0}'.format(vm_['name']))
-
-    
-    # Bootstrap!
-    ret = salt.utils.cloud.bootstrap(vm_, __opts__)
-     
-    return ret
-'''
+  
 def get_conn():
    '''
    Return a conn object for the passed VM data
@@ -400,17 +482,14 @@ def get_conn():
    driver = get_driver(Provider.DIMENSIONDATA)
  
    region = config.get_cloud_config_value(
-        'region', vm_, __opts__, search_global=False
+        'region', vm_, __opts__
    )   
     
-   import libcloud.security
-   libcloud.security.VERIFY_SSL_CERT = False
-
    user_id = config.get_cloud_config_value(
-       'user_id', vm_, __opts__, search_global=False
+       'user_id', vm_, __opts__
    )
    key = config.get_cloud_config_value(
-       'key', vm_, __opts__, search_global=False
+       'key', vm_, __opts__
    )
 
    if key is not None:
@@ -419,5 +498,28 @@ def get_conn():
    return driver(
             user_id,
             key,
-            region
+            region=region
        )
+     
+def get_lb_conn(dd_driver=None):
+    '''
+    Return a load-balancer conn object
+    '''
+    vm_ = get_configured_provider()
+    driver = get_driver(Provider.DIMENSIONDATA)
+ 
+    region = config.get_cloud_config_value(
+        'region', vm_, __opts__
+    )   
+    
+    user_id = config.get_cloud_config_value(
+       'user_id', vm_, __opts__
+    )
+    key = config.get_cloud_config_value(
+       'key', vm_, __opts__
+    )
+    if not dd_driver:
+        raise SaltCloudSystemExit(
+            'Missing dimensiondata_driver for get_lb_conn method.'
+        )
+    return get_driver_lb(Provider_lb.DIMENSIONDATA)(user_id, key, region=region)
