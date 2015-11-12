@@ -1,4 +1,7 @@
+# DimensionData cloud driver for Salt (Salt-Cloud)
+
 #  HOW TO INSTALL:
+
 #1) Download latest Salt Source from Git
 #2) Install latest Apache Libcloud
 #3) Add this file to the Salt source:
