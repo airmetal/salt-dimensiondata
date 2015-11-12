@@ -4,6 +4,19 @@
 #  File:   Early prototype of Dimension Data cloud provider support for Salt-cloud.
 #  Version 0.2
 #
+#  HOW TO INSTALL:
+#
+#  1) Download latest Salt Source from Git
+#  2) Install latest Apache Libcloud
+#  3) Add this file to the Salt source:
+#              cp dimensiondata.py <salt-src-root-dir>/salt/salt/cloud/clouds/.
+#  4) Compile Salt source:
+#              cd <salt-src-root-dir>/salt/salt/cloud/clouds/
+#              python -m compileall .
+#  5) Install Salt source to local/virtual environment
+#              pip install -e <salt-src-root-dir>/salt
+#  6) Create provider and profile config files and use 'salt' or 'salt-cloud' commands to automate MCP 2.0 cloud
+#
 
 # Import python libs
 from __future__ import absolute_import
