@@ -11,4 +11,5 @@
     python -m compileall .
 #5) Install Salt source to local/virtual environment
     pip install -e <salt-src-root-dir>/salt
-#6) Create provider and profile config files and use 'salt' or 'salt-cloud' commands to automate MCP 2.0 cloud
+#6) Create provider and profile config files
+#7) Use Salt/Salt-Cloud to automate MCP 2.0 cloud
