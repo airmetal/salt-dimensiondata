@@ -1,5 +1,7 @@
 ## Instructions to install and use SaltStack develop branch
 
+Note:  These instructions have only been tested on Red Hat Linux 7.  Logically they should also work for Red Hat 6 and Centos 6 & 7.
+
 ### 0. Download install script and make it executable before invoking it. The script will install all prereqs and salt development repo.
 
 	curl -O http://s3.amazonaws.com/ddsalt/install-salt-dev.sh
