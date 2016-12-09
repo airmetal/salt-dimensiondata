@@ -1,4 +1,4 @@
-## Instructions to install and use SaltStack develop branch
+## Instructions to create a complete SaltStack environment on Red Hat Linux
 
 Note:  These instructions have only been tested on Red Hat Linux 7.  Logically they should also work for Red Hat 6 and Centos 6 & 7.
 
