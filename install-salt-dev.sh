@@ -16,6 +16,8 @@ virtualenv --system-site-packages ~/.salt
 source ~/.salt/bin/activate
 pip install M2Crypto
 pip install pyzmq PyYAML pycrypto msgpack-python jinja2 psutil futures tornado
+pip install apache-libcloud
+pip install netaddr
 cd /opt
 git clone https://github.com/DimensionDataSA/salt.git
 pip install -e ./salt
