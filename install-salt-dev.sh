@@ -28,8 +28,10 @@ cp -r /opt/salt/conf/* ~/.salt/etc/salt/
 cd ~/.salt/etc/salt/cloud.providers.d/
 wget http://s3.amazonaws.com/ddsalt/etc/salt/cloud.providers.d/dimensiondata.conf
 cd ~/.salt/etc/salt/cloud.profiles.d/
-wget  http://s3.amazonaws.com/ddsalt/etc/salt/cloud.profiles.d/didata-web.conf 
+wget  https://s3.amazonaws.com/ddsalt/etc/salt/cloud.profiles.d/didata-web-na9.conf
+wget https://s3.amazonaws.com/ddsalt/etc/salt/cloud.profiles.d/didata-web-na12.conf
 cd ~/.salt/etc/salt/cloud.maps.d/ 
 wget  http://s3.amazonaws.com/ddsalt/etc/salt/cloud.maps.d/didata-web-centos.conf 
+wget https://s3.amazonaws.com/ddsalt/etc/salt/cloud.maps.d/didata-web-rhel.conf
 
 
