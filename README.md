@@ -36,7 +36,7 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
     vi ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
     
     
-### 5. COMMANDS TO RUN (make sure you are in the virtual env (step 1) )
+### 5. Commands (make sure you are in the virtual env (step 1) )
 
 ####  List images
 
@@ -62,10 +62,14 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 ## Notes:
 
 ### Provision on same VLAN as Salt Master
-Review the sample ~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf. The property ssh_gateway=private_ips is required to ensure once the servers are provisioned the Salt Master can bootstrap the nodes(servers)
+Review the sample 
+~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf 
+The property ssh_gateway=private_ips is required to ensure once the servers are provisioned the Salt Master can bootstrap the nodes(servers)
 
 ### Provision over external network using Public IP's
-Review the sample ~/.salt/etc/salt/cloud.profiles.d/didata-web-na9.conf.  The property remote_client=true is required.  
+Review the sample
+ ~/.salt/etc/salt/cloud.profiles.d/didata-web-na9.conf
+ The property remote_client=true is required.  
 
 ### Create a new VLAN
 If you are creating a new VLAN then a vlan_base_ip key/value is also required.
