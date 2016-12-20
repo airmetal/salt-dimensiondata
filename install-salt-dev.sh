@@ -19,7 +19,7 @@ pip install pyzmq PyYAML pycrypto msgpack-python jinja2 psutil futures tornado
 pip install apache-libcloud
 pip install netaddr
 cd /opt
-git clone https://github.com/DimensionDataSA/salt.git
+git clone https://github.com/DimensionDataSA/salt.git -b develop --single-branch
 pip install -e ./salt
 mkdir -p ~/.salt/etc/salt
 cd
