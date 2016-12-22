@@ -50,7 +50,7 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 
     salt-cloud -d -c ~/.salt/etc/salt -p centos7  web1
     
-####  Create servers using maps (use '-P' flag to create servers in parallel)
+####  Create servers using maps 
 
 	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
 	
@@ -61,8 +61,8 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 
 ## Notes:
 
-### Provisioning Network Domain or VLAN in parallel (-P flag)
-Currently creating a new Network Domain or Vlan is not supported. This is due to concurrency issues in how Cloud Control coordinates network operations.  You may want to pre-create the Network Domain and Vlan prior to creating the nodes, in which case you can use the **-P** flag; otherwise you can issue the command as shown above to issue operations serially.
+### Provisioning in parallel (-P flag) is NOT supported
+Currently creating a new Network Domain or Vlan is not supported. Nodes/servers MAY work but there is no gaurantee, especially if configuring over public/external network. This is due to inability to issue concurrent operations on the same network resource in Cloud Control.  You may want to pre-create the Network Domain and Vlan prior to creating the nodes, in which case you can use the **-P** flag; otherwise you can issue the command as shown above to issue operations serially.
 
 ### Deleting network resources are not supported with (-d) flag
 The driver does not remove the network resources created during provisioning with the **-d** flag.  Only the nodes/servers are removed.
