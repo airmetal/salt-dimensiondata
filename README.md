@@ -52,17 +52,17 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 ####  Create server
     
     	External:
-    		salt-cloud -c ~/.salt/etc/salt -p centos7 web1
+    		salt-cloud -c ~/.salt/etc/salt -p centos7 web5
     	Internal:
-        	salt-cloud -c ~/.salt/etc/salt -p rhel7 web1
+        	salt-cloud -c ~/.salt/etc/salt -p rhel7 web6
     
 ####  Destroy server web1
 
     	External:
-    		salt-cloud -d -c ~/.salt/etc/salt -p centos7  web1
+    		salt-cloud -d -c ~/.salt/etc/salt -p centos7  web5
 	
     	Internal:
-    		salt-cloud -d -c ~/.salt/etc/salt -p rhel7  web1
+    		salt-cloud -d -c ~/.salt/etc/salt -p rhel7  web6
     
 ####  Create servers using maps (use '-P' flag to create servers in parallel. CAUTION: Check *Notes* section first.)
 
