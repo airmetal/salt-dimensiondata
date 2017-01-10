@@ -36,7 +36,10 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
  	
 ### 4. Configure you maps ( i.e. deploying multiple servers in groups). Example:
  
-    vi ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+    	External:
+    		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+	Internal:
+		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
     
     
 ### 5. Commands (make sure you are in the virtual env (step 1) )
@@ -46,20 +49,35 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 	salt-cloud -c ~/.salt/etc/salt --list-images my-dimensiondata-config
 	
 ####  Create server
-
-    salt-cloud -c ~/.salt/etc/salt -p centos7 web1
+    
+    External:
+    	salt-cloud -c ~/.salt/etc/salt -p centos7 web1
+    Internal:
+        salt-cloud -c ~/.salt/etc/salt -p rhel7 web1
     
 ####  Destroy server web1
 
-    salt-cloud -d -c ~/.salt/etc/salt -p centos7  web1
+    External:
+    	salt-cloud -d -c ~/.salt/etc/salt -p centos7  web1
+	
+    Internal:
+    	salt-cloud -d -c ~/.salt/etc/salt -p rhel77  web1
     
-####  Create servers using maps 
+####  Create servers using maps (use '-P' flag to create servers in parallel. CAUTION: Check *Notes* section first.)
 
+    External:
 	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+	
+    Internal:
+    	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
 	
 ####  Destroy servers using maps (use '-P' flag to destroy servers in parallel)
 
+    External:
 	salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+
+    Internal:
+        salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
 
 
 ## Notes:
