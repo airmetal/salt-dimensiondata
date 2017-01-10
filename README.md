@@ -86,7 +86,7 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 ### Debug
 Add the **-l debug** option after the command to display detailed debug information. Example:
 
-	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf **-l debug**
+	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf -l debug
 
 ### Provisioning in parallel (-P flag) is NOT supported
 Currently creating a new Network Domain or Vlan is not supported. Nodes/servers **MAY** work but there is no gaurantee, especially if configuring over public/external network. This is due to inability to issue concurrent operations on a shared network resource in Cloud Control.  You may want to pre-create the Network Domain and Vlan prior to creating the nodes, in which case you can use the **-P** flag; otherwise you can issue the command as shown above to issue operations serially.
