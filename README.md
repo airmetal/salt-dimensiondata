@@ -29,7 +29,7 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 	
 ### 3. Configure your profile ( i.e. template for deploying a server). Example:
  
- 	vi ~/.salt/etc/salt/cloud.profiles.d/didata-web.conf
+ 	vi ~/.salt/etc/salt/cloud.profiles.d/didata-web-na9.conf
  	
 ### 4. Configure you maps ( i.e. deploying multiple servers in groups). Example:
  
