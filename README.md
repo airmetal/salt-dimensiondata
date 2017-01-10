@@ -37,7 +37,7 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
  	
 ### 4. Configure you maps ( i.e. deploying multiple servers in groups). Example:
 
-    	External:
+	External:
     		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
 	Internal:
 		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
@@ -74,12 +74,11 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 	
 ####  Destroy servers using maps (use '-P' flag to destroy servers in parallel)
 
-    	External:
+	External:
 		salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
 
-   	Internal:
+	Internal:
         	salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
-
 
 ## Notes:
 
@@ -88,15 +87,18 @@ Add the **-l debug** option after the command to display detailed debug informat
 
 	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf -l debug
 
-### Provisioning in parallel (-P flag) is NOT supported
-Currently creating a new Network Domain or Vlan is not supported. Nodes/servers **MAY** work but there is no gaurantee, especially if configuring over public/external network. This is due to inability to issue concurrent operations on a shared network resource in Cloud Control.  You may want to pre-create the Network Domain and Vlan prior to creating the nodes, in which case you can use the **-P** flag; otherwise you can issue the command as shown above to issue operations serially.
+### Creating a new VLAN and multiple VM's in parallel (-P flag) is NOT supported
+Currently creating a new Network Domain or Vlan is not supported. Nodes/servers **MAY** work but there is no gaurantee, especially if configuring over public/external network. Although retrying the samr command should create the remaining VM's if there was a failure on the first run during VLAN creation. This is due to inability to issue concurrent operations on a shared network resource (VLAN) in Cloud Control.  
+You can also pre-create the Network Domain and Vlan prior to creating the nodes, in which case you can use the **-P** flag; otherwise you can issue the command as shown above to issue operations serially.
 
 ### Deleting network resources are not supported with (-d) flag
 The driver does not remove the network resources created during provisioning with the **-d** flag.  Only the nodes/servers are removed.
 
 ### Provision on same VLAN (Private Network) as Salt Master
-Review the sample 
- **~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf**
+Review the sample :
+
+	~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf
+
 The property **ssh_gateway=private_ips** is required to ensure once the servers are provisioned the Salt Master can bootstrap the nodes(servers)
 
 ### Create a new VLAN
@@ -104,4 +106,3 @@ If you are creating a new VLAN then a **vlan_base_ip** key/value is also require
 
 ### Create a new Network Domain 
 Creating a new Network Domain also requires two VLAN key/value pairs, i,e  **vlan, vlan_base_ip**
-_
