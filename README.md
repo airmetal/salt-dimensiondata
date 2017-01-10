@@ -28,6 +28,7 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 	vi ~/.salt/etc/salt/cloud.providers.d/dimensiondata.conf
 	
 ### 3. Configure your profile ( i.e. template for deploying a server). Examples:
+
 	External (Public) network: 
 		vi ~/.salt/etc/salt/cloud.profiles.d/didata-web-na9.conf
 	
@@ -35,7 +36,7 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 		vi ~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf
  	
 ### 4. Configure you maps ( i.e. deploying multiple servers in groups). Example:
- 
+
     	External:
     		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
 	Internal:
@@ -50,34 +51,34 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 	
 ####  Create server
     
-    External:
-    	salt-cloud -c ~/.salt/etc/salt -p centos7 web1
-    Internal:
-        salt-cloud -c ~/.salt/etc/salt -p rhel7 web1
+    	External:
+    		salt-cloud -c ~/.salt/etc/salt -p centos7 web1
+    	Internal:
+        	salt-cloud -c ~/.salt/etc/salt -p rhel7 web1
     
 ####  Destroy server web1
 
-    External:
-    	salt-cloud -d -c ~/.salt/etc/salt -p centos7  web1
+    	External:
+    		salt-cloud -d -c ~/.salt/etc/salt -p centos7  web1
 	
-    Internal:
-    	salt-cloud -d -c ~/.salt/etc/salt -p rhel77  web1
+    	Internal:
+    		salt-cloud -d -c ~/.salt/etc/salt -p rhel77  web1
     
 ####  Create servers using maps (use '-P' flag to create servers in parallel. CAUTION: Check *Notes* section first.)
 
-    External:
-	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+    	External:
+		salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
 	
-    Internal:
-    	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
+    	Internal:
+    		salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
 	
 ####  Destroy servers using maps (use '-P' flag to destroy servers in parallel)
 
-    External:
-	salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+    	External:
+		salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
 
-    Internal:
-        salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
+   	Internal:
+        	salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
 
 
 ## Notes:
