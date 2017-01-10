@@ -62,7 +62,7 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
     		salt-cloud -d -c ~/.salt/etc/salt -p centos7  web1
 	
     	Internal:
-    		salt-cloud -d -c ~/.salt/etc/salt -p rhel77  web1
+    		salt-cloud -d -c ~/.salt/etc/salt -p rhel7  web1
     
 ####  Create servers using maps (use '-P' flag to create servers in parallel. CAUTION: Check *Notes* section first.)
 
