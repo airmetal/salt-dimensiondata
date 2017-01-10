@@ -2,7 +2,7 @@
 
 ## Overview
 Install script includes the Salt develop (2016.11 develop) branch fork. 
-This branch has been updated to support external provisioning. Meaning you can now create an MCP server cluster from an external (public) network. Previously only private IP was supported which meant that only VM's in the same VLAN could be provisioned as minions. 
+This branch has been updated to support external provisioning. Meaning you can now create an MCP server cluster from an external (public) network for e.g. your laptop over the internet. Previously only private IP was supported which meant that only VM's in the same VLAN as the Salt Master could be provisioned and added as minions via the automation. 
 
 ## Installation
 Download install script from https://s3.amazonaws.com/ddsalt/install-salt-dev.sh  or clone this repo.
