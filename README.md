@@ -28,12 +28,11 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 	vi ~/.salt/etc/salt/cloud.providers.d/dimensiondata.conf
 	
 ### 3. Configure your profile ( i.e. template for deploying a server). Examples:
-
-  #### External (Public) network       
- 	 vi ~/.salt/etc/salt/cloud.profiles.d/didata-web-na9.conf
+	External (Public) network: 
+		vi ~/.salt/etc/salt/cloud.profiles.d/didata-web-na9.conf
 	
-  #### Internal (Private) network       
- 	 vi ~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf
+	Internal (Private) network:
+		vi ~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf
  	
 ### 4. Configure you maps ( i.e. deploying multiple servers in groups). Example:
  
