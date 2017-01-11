@@ -2,7 +2,7 @@
 
 ## Overview
 Install script includes the Salt develop (2016.11 develop) branch fork. 
-This branch has been updated to support external provisioning. Meaning you can now create an MCP server cluster from an external (public) network. Previously only private IP was supported which meant that only VM's in the same VLAN could be provisioned as minions. 
+This branch has been updated to support external provisioning. Meaning you can now create an MCP server cluster from an external (public) network for e.g. your laptop over the internet. Previously only private IP was supported which meant that only VM's in the same VLAN as the Salt Master could be provisioned and added as minions via the automation. 
 
 ## Installation
 Download install script from https://s3.amazonaws.com/ddsalt/install-salt-dev.sh  or clone this repo.
@@ -27,13 +27,20 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 
 	vi ~/.salt/etc/salt/cloud.providers.d/dimensiondata.conf
 	
-### 3. Configure your profile ( i.e. template for deploying a server). Example:
- 
- 	vi ~/.salt/etc/salt/cloud.profiles.d/didata-web.conf
+### 3. Configure your profile ( i.e. template for deploying a server). Examples:
+
+	External (Public) network: 
+		vi ~/.salt/etc/salt/cloud.profiles.d/didata-web-na9.conf
+	
+	Internal (Private) network:
+		vi ~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf
  	
 ### 4. Configure you maps ( i.e. deploying multiple servers in groups). Example:
- 
-    vi ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+
+	External:
+    		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+	Internal:
+		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
     
     
 ### 5. Commands (make sure you are in the virtual env (step 1) )
@@ -43,37 +50,59 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 	salt-cloud -c ~/.salt/etc/salt --list-images my-dimensiondata-config
 	
 ####  Create server
-
-    salt-cloud -c ~/.salt/etc/salt -p centos7 web1
+    
+    	External:
+    		salt-cloud -c ~/.salt/etc/salt -p centos7 web5
+    	Internal:
+        	salt-cloud -c ~/.salt/etc/salt -p rhel7 web6
     
 ####  Destroy server web1
 
-    salt-cloud -d -c ~/.salt/etc/salt -p centos7  web1
-    
-####  Create servers using maps (use '-P' option to create servers in parallel)
-
-	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf -P
+    	External:
+    		salt-cloud -d -c ~/.salt/etc/salt -p centos7  web5
 	
-####  Destroy servers using maps (use '-P' option to destroy servers in parallel)
+    	Internal:
+    		salt-cloud -d -c ~/.salt/etc/salt -p rhel7  web6
+    
+####  Create servers using maps (use '-P' flag to create servers in parallel. CAUTION: Check *Notes* section first.)
 
-	salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf -P
+    	External:
+		salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+	
+    	Internal:
+    		salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
+	
+####  Destroy servers using maps (use '-P' flag to destroy servers in parallel)
 
+	External:
+		salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
+
+	Internal:
+        	salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
 
 ## Notes:
 
-### Provision on same VLAN as Salt Master
-Review the sample 
-~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf 
-The property ssh_gateway=private_ips is required to ensure once the servers are provisioned the Salt Master can bootstrap the nodes(servers)
+### Debug
+Add the **-l debug** option after the command to display detailed debug information. Example:
 
-### Provision over external network using Public IP's
-Review the sample
- ~/.salt/etc/salt/cloud.profiles.d/didata-web-na9.conf
- The property remote_client=true is required.  
+	salt-cloud -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf -l debug
+
+### Creating a new VLAN and multiple VM's in parallel (-P flag) is NOT supported
+Currently creating a new Network Domain or Vlan is not supported. Nodes/servers **MAY** work but there is no gaurantee, especially if configuring over public/external network. Although retrying the samr command should create the remaining VM's if there was a failure on the first run during VLAN creation. This is due to inability to issue concurrent operations on a shared network resource (VLAN) in Cloud Control.  
+You can also pre-create the Network Domain and Vlan prior to creating the nodes, in which case you can use the **-P** flag; otherwise you can issue the command as shown above to issue operations serially.
+
+### Deleting network resources are not supported with (-d) flag
+The driver does not remove the network resources created during provisioning with the **-d** flag.  Only the nodes/servers are removed.
+
+### Provision on same VLAN (Private Network) as Salt Master
+Review the sample :
+
+	~/.salt/etc/salt/cloud.profiles.d/didata-web-na12.conf
+
+The property **ssh_gateway=private_ips** is required to ensure once the servers are provisioned the Salt Master can bootstrap the nodes(servers)
 
 ### Create a new VLAN
-If you are creating a new VLAN then a vlan_base_ip key/value is also required.
+If you are creating a new VLAN then a **vlan_base_ip** key/value is also required.
 
 ### Create a new Network Domain 
-Creating a new Network Domain also requires two VLAN key/value pairs, i,e  vlan  & vlan_base_ip
-
+Creating a new Network Domain also requires two VLAN key/value pairs, i,e  **vlan, vlan_base_ip**
