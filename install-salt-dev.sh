@@ -1,5 +1,14 @@
 #!/bin/bash
 yum -y update
+yum groupinstall -y 'development tools'
+yum install -y zlib-devel bzip2-devel openssl-devel xz-libs wget
+wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tar.xz
+tar xf Python-2.7.12.tar.xz 
+cd Python-2.7.12
+./configure --prefix=/usr/local
+make
+make altinstall
+ln -s /usr/local/bin/python2.7 /usr/local/bin/python
 yum -y install git-all
 yum -y install gcc
 yum -y install openssl-devel
