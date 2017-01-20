@@ -41,9 +41,10 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
     		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-centos.conf
 	Internal:
 		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
-    
-    
-### 5. Commands (make sure you are in the virtual env (step 1) )
+
+### 5. Open up MCP firewall ports 80, 4505, and 4506 for the salt master (i.e. this server)
+
+### 6. Commands NOTE: _make sure you are in the virtual env (step 1)_ 
 
 ####  List images
 
@@ -79,6 +80,53 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 
 	Internal:
         	salt-cloud -d -c ~/.salt/etc/salt -m ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
+
+### (OPTIONAL) Install software using Salt Reactor on new VM's
+Once the VM's are deployed if you would like to automate software installation you can integrate with the Salt Reactor event system to trigger software installation on our newly created VM's.  The instructions below demonstrate how to configure this with pre-configured files that were downloaded by the install script.
+
+The scenario has been adapted from this [article](https://arnoldbechtoldt.com/blog/saltstack-event-driven-infrastructure-with-salt-reactor)
+
+#### 1. Inspect master config
+
+	cat ~/.salt/etc/salt/master
+	
+#### 2. Modify minion config and modify the master IP address to match your local machine (i.e. Salt Master) 
+	
+	vi ~/.salt/etc/salt/minion
+
+#### 3. Inspect the Salt SLS file for deploying an Apache Webserver
+     
+        cat /srv/salt/states/webserver.sls
+	
+#### 4. Inspect the Reactor state (sls) files
+ 	
+	cat /srv/salt/reactor/basic.sls
+	cat /srv/salt/reactor/job_ret.sls
+	cat /srv/salt/reactor/lb_pool_update.sls
+	
+#### 5.  Inspect (and modify) the autosign.conf file.  This ensures the minions are automatically authenticated.
+
+	cat ~/.salt/etc/salt/autosign.conf
+
+Ensure that the name pattern matches the names of VM's you are created. The existing entry should work if you did not change the VM names. Otherwise update accordingly.
+	
+#### 6.  Open two new command windows.
+
+Execute the following command in the first window:
+	
+	salt-run -c ~/.salt/etc/salt state.event pretty=True 
+	
+Execute the following command in the second window:
+
+	salt-master -c ~/.salt/etc/salt -l debug
+	 
+#### 6.  Destroy (if you had previously created VM's) and create new VM's 
+
+Observe the messages in the two newly opened command windows (Step 5).
+
+Once the execution has completed, launch the browser and point to the Public IP of any of the VM's created.  It should display the default Apache Webserver page.
+
+_This final step completely demonstrates how you can deploy VM's and provision software on newly created servers on the MCP platform._
 
 ## Notes:
 
