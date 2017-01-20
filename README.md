@@ -42,7 +42,7 @@ Note:  These instructions have only been tested on Red Hat Linux 7.  Logically t
 	Internal:
 		vi ~/.salt/etc/salt/cloud.maps.d/didata-web-rhel.conf
 
-### 5. Open up MCP firewall ports 80, 4505, and 4506 for the salt master (i.e. this server)
+### 5. Open up MCP firewall ports 4505, and 4506 for the salt master (i.e. this server)
 
 ### 6. Commands NOTE: _make sure you are in the virtual env (step 1)_ 
 
@@ -124,7 +124,7 @@ Execute the following command in the second window:
 
 Observe the messages in the two newly opened command windows (Step 5).
 
-Once the execution has completed, launch the browser and point to the Public IP of any of the VM's created.  It should display the default Apache Webserver page.
+Once the execution has completed, launch the browser and point to the Public IP of any of the VM's created.  It should display the default Apache Webserver page.  **NOTE:  You will need to open port 80 in the firewall**
 
 _This final step completely demonstrates how you can deploy VM's and provision software on newly created servers on the MCP platform._
 
