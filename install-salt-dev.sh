@@ -19,9 +19,15 @@ systemctl disable firewalld
 wget https://pypi.python.org/packages/source/s/setuptools/setuptools-7.0.tar.gz --no-check-certificate
 tar xzf setuptools-7.0.tar.gz
 cd setuptools-7.0
+cd
 mkdir -p /srv/salt/{states,reactor}
 cd /srv/salt/states
-wget http://s3.amazonaws.com/ddsalt/files/basic.sls
+wget https://s3.amazonaws.com/ddsalt/files/webserver.sls
+cd /srv/salt/reactor
+wget https://s3.amazonaws.com/ddsalt/files/job_ret.sls
+wget https://s3.amazonaws.com/ddsalt/files/lb_pool_update.sls
+wget https://s3.amazonaws.com/ddsalt/files/basic.sls
+cd
 python setup.py install
 wget https://bootstrap.pypa.io/get-pip.py
 python get-pip.py
