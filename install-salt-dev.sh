@@ -14,9 +14,14 @@ yum -y install gcc
 yum -y install openssl-devel
 yum -y install python-devel
 yum -y install wget
+systemctl stop firewalld
+systemctl disable firewalld
 wget https://pypi.python.org/packages/source/s/setuptools/setuptools-7.0.tar.gz --no-check-certificate
 tar xzf setuptools-7.0.tar.gz
 cd setuptools-7.0
+mkdir -p /srv/salt/{states,reactor}
+cd /srv/salt/states
+wget http://s3.amazonaws.com/ddsalt/files/basic.sls
 python setup.py install
 wget https://bootstrap.pypa.io/get-pip.py
 python get-pip.py
@@ -42,5 +47,4 @@ wget https://s3.amazonaws.com/ddsalt/etc/salt/cloud.profiles.d/didata-web-na12.c
 cd ~/.salt/etc/salt/cloud.maps.d/ 
 wget  http://s3.amazonaws.com/ddsalt/etc/salt/cloud.maps.d/didata-web-centos.conf 
 wget https://s3.amazonaws.com/ddsalt/etc/salt/cloud.maps.d/didata-web-rhel.conf
-
 
