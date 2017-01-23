@@ -53,4 +53,9 @@ wget https://s3.amazonaws.com/ddsalt/etc/salt/cloud.profiles.d/didata-web-na12.c
 cd ~/.salt/etc/salt/cloud.maps.d/ 
 wget  http://s3.amazonaws.com/ddsalt/etc/salt/cloud.maps.d/didata-web-centos.conf 
 wget https://s3.amazonaws.com/ddsalt/etc/salt/cloud.maps.d/didata-web-rhel.conf
+cd ~/.salt/etc/salt
+wget https://s3.amazonaws.com/ddsalt/files/autosign.conf
+wget https://s3.amazonaws.com/ddsalt/files/master
+wget https://s3.amazonaws.com/ddsalt/files/minion
+cd
 
