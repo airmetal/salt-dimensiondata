@@ -104,13 +104,20 @@ The scenario has been adapted from this [article](https://arnoldbechtoldt.com/bl
 	cat /srv/salt/reactor/job_ret.sls
 	cat /srv/salt/reactor/lb_pool_update.sls
 	
-#### 5.  Inspect (and modify) the autosign.conf file.  This ensures the minions are automatically authenticated.
+#### 5.  Inspect (and modify) the autosign.conf file.  This ensures the minions are automatically authenticated by Salt Master.
 
 	cat ~/.salt/etc/salt/autosign.conf
 
-Ensure that the name pattern matches the names of VM's you are created. The existing entry should work if you did not change the VM names. Otherwise update accordingly.
+**_NOTE:_** Ensure that the name pattern matches the names of VM's you are created. The existing entry should work if you did not change the VM names. Otherwise update accordingly.
+
+#### 6. Inspect and modify (as needed) the master and minion files.
+
+	vi ~/.salt/etc/salt/master
+	vi ~/.salt/etc/salt/minion
 	
-#### 6.  Open two new command windows.
+**_NOTE:_** At the very minimum you will likely need to modify the Salt Master IP address in the _~/.salt/etc/salt/minion_ file
+	
+#### 7.  Open two new command windows.
 
 Execute the following command in the first window:
 	
