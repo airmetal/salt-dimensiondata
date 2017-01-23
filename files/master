@@ -1,0 +1,11 @@
+autosign_file: ~/.salt/etc/salt/autosign.conf
+file_roots:
+  base:
+  - /srv/salt/states
+reactor:
+  - salt/minion/*/start:
+    - /srv/salt/reactor/basic.sls
+  - salt/job/*/ret/*:
+    - /srv/salt/reactor/job_ret.sls
+  - frontend/loadbalancer/pool/update:
+    - /srv/salt/reactor/lb_pool_update.sls
