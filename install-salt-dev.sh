@@ -55,6 +55,8 @@ wget  http://s3.amazonaws.com/ddsalt/etc/salt/cloud.maps.d/didata-web-centos.con
 wget https://s3.amazonaws.com/ddsalt/etc/salt/cloud.maps.d/didata-web-rhel.conf
 cd ~/.salt/etc/salt
 wget https://s3.amazonaws.com/ddsalt/files/autosign.conf
+rm -f ./master
+rm -f ./minion
 wget https://s3.amazonaws.com/ddsalt/files/master
 wget https://s3.amazonaws.com/ddsalt/files/minion
 cd
