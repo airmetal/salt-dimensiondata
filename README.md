@@ -109,15 +109,8 @@ The scenario has been adapted from this [article](https://arnoldbechtoldt.com/bl
 	cat ~/.salt/etc/salt/autosign.conf
 
 **_NOTE:_** Ensure that the name pattern matches the names of VM's you are created. The existing entry should work if you did not change the VM names. Otherwise update accordingly.
-
-#### 6. Inspect and modify (as needed) the master and minion files.
-
-	vi ~/.salt/etc/salt/master
-	vi ~/.salt/etc/salt/minion
 	
-**_NOTE:_** At the very minimum you will likely need to modify the Salt Master IP address in the _~/.salt/etc/salt/minion_ file
-	
-#### 7.  Open two new command windows.
+#### 6.  Open two new command windows.
 
 Execute the following command in the first window:
 	
@@ -127,7 +120,7 @@ Execute the following command in the second window:
 
 	salt-master -c ~/.salt/etc/salt -l debug
 	 
-#### 6.  Destroy (if you had previously created VM's) and create new VM's 
+#### 7.  Destroy (if you had previously created VM's) and create new VM's 
 
 Observe the messages in the two newly opened command windows (Step 5).
 
